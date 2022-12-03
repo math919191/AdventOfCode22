@@ -1,3 +1,4 @@
+# cmd /c 'py day1.py < input.txt > output.txt'
 from sys import stdin, stdout
 
 counter = 0
