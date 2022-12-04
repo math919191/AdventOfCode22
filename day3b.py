@@ -8,7 +8,6 @@ total = 0
 let = []
 groups = int(len(totals)/3)
 for i in range(groups):
-    # print(groups*3)
     b1 = set(totals[i*3])
     b2 = set(totals[i*3 + 1])
     b3 = set(totals[i*3 + 2])
