@@ -13,15 +13,21 @@ currDir = []
 directories = {}  # maps directory and all its dependencies
 fileSizes = {}  # holds sizes of all files
 
-
+#counter = 0
+level = 0
 for line in lines:
     lineSplit = line.split(" ")
     if (lineSplit[0] == "$"):
 
         if (lineSplit[1] == "cd" and lineSplit[2] != ".."):
-            directories[currDirName] = currDir
+            level += 1
+            directories[currDirName] = (currDir)
             currDir = []
             currDirName = lineSplit[2]
+            print(currDirName)
+
+        else:
+            level -= 1
         # elif (lineSplit[1] == "ls"):
 
     else:
@@ -29,23 +35,7 @@ for line in lines:
             fileSizes[lineSplit[1]] = int(lineSplit[0])
         currDir.append([lineSplit[1], lineSplit[0]])
 
-
-# for key, value in directories.items():
-#     print(key,  " : ", value)
-# print(fileSizes)
-
-
-def tryToGetVal(dirname, dependencies):  # passing in just the dependencies
-    total = 0
-    for d in dependencies:
-        name = d[0]
-        if name in fileSizes:  # it's settled
-            total += fileSizes[name]
-        else:
-            return False
-
-    fileSizes[dirname] = total
-    return True
+    counter += 1
 
 
 dirSizes = {}
@@ -79,19 +69,29 @@ for a, b in fileSizes.items():
     print(a, b)
     if (b == 0):
         dirBool = True
+
     if (int(b) <= 100000 and dirBool):
-        print(b)
-        answer += b
+        # print(b)
+        answer += int(b)
 
 print("answer: ", answer)
-# print(good)
-# total = 0
-# dirBool = False
-# for i in good:
-#     if (i == 0):
-#         dirBool == True
-# #    print(i)
-#     if (dirBool):
-#         if (i < 100000):
-#             total += i
-# print(total)
+
+# 717595 is too low
+
+
+# for key, value in directories.items():
+#     print(key,  " : ", value)
+# print(fileSizes)
+
+
+# def tryToGetVal(dirname, dependencies):  # passing in just the dependencies
+#     total = 0
+#     for d in dependencies:
+#         name = d[0]
+#         if name in fileSizes:  # it's settled
+#             total += fileSizes[name]
+#         else:
+#             return False
+
+#     fileSizes[dirname] = total
+#     return True
