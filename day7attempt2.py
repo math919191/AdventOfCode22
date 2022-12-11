@@ -57,9 +57,9 @@ currLine = 0
 
 
 def addDirAndChildren(dirName, currLineNum, parentTree, input):
-    print(parentTree)
-    print("parent: ", parentTree.__repr__())
-    print("child: ", dirName)
+    # print(parentTree)
+    #print("parent: ", parentTree.__repr__())
+    #print("child: ", dirName)
     # the line that we are currently on with dir name
     if (currLineNum == (len(input))):
         print("DONE")
@@ -87,7 +87,7 @@ def addDirAndChildren(dirName, currLineNum, parentTree, input):
         addDirAndChildren(input[currLineNum].split(
             " ")[2], currLineNum, childTree, input)
     elif (dirName == ".."):
-        print("going back")
+        #        print("going back")
         addDirAndChildren(input[currLineNum+1].split(" ")
                           [2], currLineNum+1, parentTree.get_parent(), input)
 
@@ -114,9 +114,9 @@ def sumSizes(tree, total):
 
 
 addDirAndChildren("/", 0, root, lines)
-printTree(slashTree, " ")
+#printTree(slashTree, " ")
 
-print("myTotal", sumSizes(slashTree, []))
+#print("myTotal", sumSizes(slashTree, []))
 
 
 def GetTreeSums(tree, sums):
@@ -131,6 +131,6 @@ finalSum = 0
 for sum in GetTreeSums(slashTree, []):
     if (sum < 100000):
         finalSum += sum
-        print(sum)
+        # print(sum)
 
 print(finalSum)
