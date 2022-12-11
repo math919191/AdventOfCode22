@@ -1,1 +1,40 @@
-total:  1851
+['dir', 'a']
+['14848514', 'b.txt']
+['8504156', 'c.dat']
+['dir', 'd']
+parentTreeName root
+/ /
+/
+ChildTreeName /
+6 23
+['dir', 'e']
+['29116', 'f']
+['2557', 'g']
+['62596', 'h.lst']
+parentTreeName /
+a a
+a
+ChildTreeName a
+12 23
+['584', 'i']
+parentTreeName a
+e e
+e
+ChildTreeName e
+15 23
+moving backwards
+e
+moving backwards
+a
+['4060174', 'j']
+['8033020', 'd.log']
+['5626152', 'd.ext']
+['7214296', 'k']
+parentTreeName /
+a d
+b.txt d
+c.dat d
+d d
+d
+ChildTreeName d
+DONE

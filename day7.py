@@ -35,8 +35,6 @@ for line in lines:
             fileSizes[lineSplit[1]] = int(lineSplit[0])
         currDir.append([lineSplit[1], lineSplit[0]])
 
-    counter += 1
-
 
 dirSizes = {}
 changes = True
