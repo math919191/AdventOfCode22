@@ -4,7 +4,7 @@ lines = []
 for line in stdin:
     lines.append(line.strip())
 
-### copied from stack overflow ###
+### copied from stack overflow and then heavily modified ###
 
 
 class Tree(object):
@@ -50,7 +50,6 @@ class Tree(object):
                 return self.children[i]
 
 
-# def __init__(self, name='root', parent='parent', size=0, children=None):
 root = Tree("root", None, 0, [])
 slashTree = Tree("/", root, 0, [])
 root.add_child(slashTree)
@@ -67,7 +66,6 @@ def addDirAndChildren(dirName, currLineNum, parentTree, input):
         return
 
     #myLine = input[currLine].split(" ")
-    # if (myLine[1] == "cd" and myLine[2] != ".."):
     if (dirName != ".."):
         dirNameTree = parentTree.get_child(dirName)
 
@@ -75,17 +73,13 @@ def addDirAndChildren(dirName, currLineNum, parentTree, input):
 
         currLineNum += 2  # jump over the ls
 
-        # keep going till we hit a cd command
         while (currLineNum < (len(input)) and input[currLineNum].split(" ")[0] != "$"):
             sizeOrDir, name = input[currLineNum].split(" ")
             currDirChildren.append(Tree(name, dirNameTree, sizeOrDir, None))
             currLineNum += 1
 
-        #print("parentTreeName", parentTree.__repr__())
         childTree = parentTree.edit_children(dirName, currDirChildren)
-        #print("ChildTreeName", childTree.__repr__())
 
-#        if (input[currLineNum].split(" ")[2] != ".."):
         if (int(currLineNum) == int(len(input))):
             print("DONE")
             return
@@ -98,20 +92,45 @@ def addDirAndChildren(dirName, currLineNum, parentTree, input):
                           [2], currLineNum+1, parentTree.get_parent(), input)
 
 
-addDirAndChildren("/", 0, root, lines)
-
-
 def printTree(tree, indent):
     for child in tree.get_children():
-        # print(child.size)
         if child.size == "dir":
-            #    print(child.get_children())
             print(indent, "-", child.__repr__())
-
             printTree(child, indent + "  ")
         else:
-            print(indent, "-", child.__repr__())
+            print(indent, "-", child.__repr__(), "(", child.size, ")")
 
 
-print("calling tree")
-print(printTree(slashTree, " "))
+def sumSizes(tree, total):
+    for child in tree.get_children():
+        if child.size == "dir":
+            sumSizes(child, total)
+        else:
+            total.append(int(child.size))
+    myTotal = 0
+    for i in total:
+        myTotal += i
+    return myTotal
+
+
+addDirAndChildren("/", 0, root, lines)
+printTree(slashTree, " ")
+
+print("myTotal", sumSizes(slashTree, []))
+
+
+def GetTreeSums(tree, sums):
+    for child in tree.get_children():
+        if child.size == "dir":
+            sums.append(sumSizes(child, []))
+            GetTreeSums(child, sums)
+    return sums
+
+
+finalSum = 0
+for sum in GetTreeSums(slashTree, []):
+    if (sum < 100000):
+        finalSum += sum
+        print(sum)
+
+print(finalSum)

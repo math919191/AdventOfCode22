@@ -19,18 +19,20 @@ going back
 parent:  /
 child:  d
 DONE
-calling tree
   - a
     - e
-      - i
-    - f
-    - g
-    - h.lst
-  - b.txt
-  - c.dat
+      - i ( 584 )
+    - f ( 29116 )
+    - g ( 2557 )
+    - h.lst ( 62596 )
+  - b.txt ( 14848514 )
+  - c.dat ( 8504156 )
   - d
-    - j
-    - d.log
-    - d.ext
-    - k
-None
+    - j ( 4060174 )
+    - d.log ( 8033020 )
+    - d.ext ( 5626152 )
+    - k ( 7214296 )
+myTotal 48381165
+94853
+584
+95437
