@@ -133,4 +133,22 @@ for sum in GetTreeSums(slashTree, []):
         finalSum += sum
         # print(sum)
 
+# 70000000
+# 30000000
+# 1644735
 print(finalSum)
+# 70000000 - total space
+
+#print("myTotal", sumSizes(slashTree, []))
+
+totalSum = sumSizes(slashTree, [])
+dirSums = GetTreeSums(slashTree, [])
+
+neededSpace = totalSum - 40000000
+
+minAmount = totalSum
+for i in dirSums:
+    if (i > (neededSpace) and i < minAmount):
+        minAmount = i
+
+print(minAmount)
