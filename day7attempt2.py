@@ -29,7 +29,6 @@ class Tree(object):
         return self.children
 
     def add_child(self, node):
-        #assert isinstance(node, Tree)
         self.children.append(node)
 
     def set_children(self, newChildren):
@@ -39,9 +38,7 @@ class Tree(object):
 
         for i in range(len(self.children)):
             if (str(self.children[i].__repr__()) == str(dirToChange)):
-                # print(self.children[i].get_children())
                 self.children[i].set_children(newChildren)
-                # print(self.children[i].get_children())
                 return self.children[i]
 
     def get_child(self, dirName):
@@ -57,10 +54,7 @@ currLine = 0
 
 
 def addDirAndChildren(dirName, currLineNum, parentTree, input):
-    # print(parentTree)
-    #print("parent: ", parentTree.__repr__())
-    #print("child: ", dirName)
-    # the line that we are currently on with dir name
+
     if (currLineNum == (len(input))):
         print("DONE")
         return
@@ -87,7 +81,6 @@ def addDirAndChildren(dirName, currLineNum, parentTree, input):
         addDirAndChildren(input[currLineNum].split(
             " ")[2], currLineNum, childTree, input)
     elif (dirName == ".."):
-        #        print("going back")
         addDirAndChildren(input[currLineNum+1].split(" ")
                           [2], currLineNum+1, parentTree.get_parent(), input)
 
@@ -113,12 +106,6 @@ def sumSizes(tree, total):
     return myTotal
 
 
-addDirAndChildren("/", 0, root, lines)
-#printTree(slashTree, " ")
-
-#print("myTotal", sumSizes(slashTree, []))
-
-
 def GetTreeSums(tree, sums):
     for child in tree.get_children():
         if child.size == "dir":
@@ -127,19 +114,14 @@ def GetTreeSums(tree, sums):
     return sums
 
 
+addDirAndChildren("/", 0, root, lines)
+
 finalSum = 0
 for sum in GetTreeSums(slashTree, []):
     if (sum < 100000):
         finalSum += sum
-        # print(sum)
 
-# 70000000
-# 30000000
-# 1644735
 print(finalSum)
-# 70000000 - total space
-
-#print("myTotal", sumSizes(slashTree, []))
 
 totalSum = sumSizes(slashTree, [])
 dirSums = GetTreeSums(slashTree, [])
