@@ -2,68 +2,60 @@ from sys import stdin, stdout
 
 trees = []
 for line in stdin:
-    letter = [x for x in line.strip()]
-    # print(letter)
-    letter.insert(0, 9)
-    letter.append(9)
-    trees.append(letter)
-
-nines = []
-for n in range(len(trees[0])):
-    nines.append(9)
-trees.insert(0, nines)
-trees.append(nines)
+    nums = [int(x) for x in line.strip()]
+    trees.append(nums)
 
 
-for p in range(len(trees)):
-    for q in range(len(trees)):
-        temp = trees[p][q]
-        trees[p][q] = int(temp)
-for i in trees:
-    print(i)
+def CheckIfLower(x, y, height):
+    if (x <= 0 or x >= (len(trees)-1) or y <= 0 or y >= (len(trees)-1)):
+        return False
+    if (int(trees[x][y]) < int(height)):
+        #print(trees[x][y], height, "true")
+
+        return True
+    else:
+        return False
 
 
-def CheckVis(x, y, trees):
-    size = len(trees)
-    print(trees[x][y])
-    north = True
-    south = True
-    east = True
-    west = True
-    northCount = 1
-    southCount = 1
-    westCount = 1
-    eastCount = 1
-    # check North view
-    # and (0 < (y + northCount) < (size-1))
-    #print(trees[x][y], trees[x][y + northCount])
-    while ((trees[x][y] > trees[x][y + northCount]) and (0 < (y + northCount) < (size-1))):
-        print(trees[x][y], trees[x][y + northCount])
-        print("nc", northCount)
-        print("coor: ", x, y + northCount)
-        print("trees at coor:", trees[x][y+northCount])
-        northCount += 1
-    while ((trees[x][y] > trees[x][y - southCount]) and (0 < (y - southCount) < (size-1))):
-        southCount += 1
-    while ((trees[x][y] > trees[x + westCount][y]) and (0 < (x + westCount) < (size-1))):
-        westCount += 1
-    while ((trees[x][y] > trees[x - eastCount][y]) and (0 < (x - eastCount) < (size-1))):
-        eastCount += 1
+def GetScenicScore(x, y):
+    treeHeight = trees[x][y]
+    #print("treeheight", trees[x][y])
+    scores = []
+    # check x up
+    diff = 1
+    while (CheckIfLower(x+diff, y, treeHeight)):
+        diff += 1
+    scores.append(diff)
+    # check x down
+    diff = 1
+    while (CheckIfLower(x-diff, y, treeHeight)):
+        diff += 1
 
-    print(northCount, southCount, eastCount, westCount)
-    return northCount * southCount * westCount * eastCount
+    scores.append(diff)
+    # check y up
+    diff = 1
+    while (CheckIfLower(x, y+diff, treeHeight)):
+        diff += 1
+    scores.append(diff)
+    # check y down
+    diff = 1
+    while (CheckIfLower(x, y-diff, treeHeight)):
+        diff += 1
+    scores.append(diff)
+
+    total = 1
+    for score in scores:
+        total = total * score
+    return total
 
 
-total = 0
 max = 0
 
+for i in range(1, len(trees)-1):
+    for j in range(1, len(trees)-1):
+        currScore = GetScenicScore(i, j)
+        if (currScore > max):
+            max = currScore
+            # print(max)
 
-count = CheckVis(3, 2, trees)
-print(count)
-# for j in range(1, len(trees)-1):
-#     for k in range(1, len(trees)-1):
-#         count = CheckVis(j, k, trees)
-#         if (count > max):
-#             max = count
-# total += 1
-# print("total: ", max)
+print(max)
