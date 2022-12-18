@@ -13,6 +13,7 @@ input = open("input.txt", "r")
 monkeys = []
 
 # Parse Input
+### IMPORTANT: for it to work, I added one line at the end of the input file: "Monkey null:"###
 currMonkey = dict()
 for line in input:
     splitLine = line.strip().split(" ")
@@ -74,20 +75,32 @@ def getAnswerPart1(monkeys):
     return numList[0] * numList[1]
 
 
-def round(monkeys):
+def multiplyAllDivisible(monkeys):
+    divideBy = 1
+    for monkey in monkeys:
+        divideBy *= int(monkey["Test"][2])
+    return divideBy
+
+
+def round(monkeys, divideBy):
     for i in range(len(monkeys)):
         # loop thru all items
         monkeys[i]["itemsInspected"] += len(monkeys[i]["StartingItems"])
         for item in monkeys[i]["StartingItems"]:
             worryLevel = item
+
             # worry level is changed based on operation
             worryLevel = newWorryLevelFromOp(
                 worryLevel, monkeys[i]["Operation"])
             # worry level is divied by 3 and rounded down
-            worryLevel = worryLevel // 3
+            # round 2, no worry levels divided
+            # worryLevel = worryLevel // 3
             # checks if worry level passes the test
             passes = (worryLevel % int(monkeys[i]["Test"][2]) == 0)
+            worryLevel = worryLevel % divideBy
+
             if (passes):
+                #worryLevel = worryLevel / int(monkeys[i]["Test"][2])
                 # throw the item to the true monkey
                 trueMonkey = monkeys[i]["trueMonkey"]
                 monkeys[trueMonkey]["StartingItems"].append(worryLevel)
@@ -95,20 +108,23 @@ def round(monkeys):
                 falseMonkey = monkeys[i]["falseMonkey"]
                 monkeys[falseMonkey]["StartingItems"].append(worryLevel)
 
-                # # throw the item to the false monkey
-                # falseMonkey = monkeys[i]["falseMonkey"]
-                # tryAgain = monkeys[falseMonkey]
-                # #falseMonkeyItems = monkeys[falseMonkey]["StartingItems"]
-                # falseMonkeyItems = falseMonkey["StartingItems"]
-                # falseMonkeyItems.append(item)
-                # monkeys[falseMonkey]["StartingItems"] = falseMonkeyItems
         monkeys[i]["StartingItems"] = []
     return monkeys
 
 
-for i in range(20):
+# print(multiplyAllDivisible(monkeys))
+divideBy = multiplyAllDivisible(monkeys)
+for i in range(10000):
     # printMonkeyItems(monkeys)
-    monkeys = round(monkeys)
+    if (i % 1000 == 0 or i == 1 or i == 20):
+        print(i)
+        printMonkeyItems(monkeys)
+        printMonkeyItemsInspected(monkeys)
+
+    # print(i)
+    monkeys = round(monkeys, divideBy)
+
 printMonkeyItems(monkeys)
 printMonkeyItemsInspected(monkeys)
+
 print(getAnswerPart1(monkeys))
