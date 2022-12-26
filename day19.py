@@ -20,6 +20,7 @@ for line in input:
     robot["oreBots"] = 1
     robot["obsBots"] = 0
     robot["geoBots"] = 0
+    robot["prevAdded"] = []
 
     robots.append(robot)
 
@@ -83,38 +84,106 @@ def getMaxGeoCountFromQueue(q):
     maxGeo = 0
     for r in q:
         maxGeo = max(r["geo"], maxGeo)
-        print(r["geo"])
     return maxGeo
 
 
-def getMaxGeosBFS(robot):
-    currMax = 0
-    prevMax = 0
-    currMaxGeo = 0
-    prevMaxGeo = 0
+def getMaxObsCountFromQueue(q):
+    maxObs = 0
+    for r in q:
+        maxObs = max(r["obs"], maxObs)
+    return maxObs
 
+
+def getMaxesForInput():
+    maxes = dict()
+    return maxes
+
+
+def shouldBuild(bot, possibleMachines, maxGeo):
+    newRobots = []
+    # Always build a geode robot if you can
+    if (possibleMachines[0] == "geo"):
+        newBot = incrementMachine("geo", bot)
+        newRobots.append(newBot)
+        return newRobots
+
+    # Then always build a obsidian robot if you can
+    if (possibleMachines[0] == "obs"):
+        newBot = incrementMachine("obs", bot)
+        newRobots.append(newBot)
+        return newRobots
+
+    # Ignore any state lagging behind the best geode bot count by 2 or more
+    if (bot["geo"]+2 < maxGeo):
+        return []
+
+    # If you skipped building a robot on the turn before, don't just build it here for kicks
+
+    # Ignore any state lagging behind the largest count of non-ore bots by 10 or more
+    # (this is probably not guaranteed to give an optimal solution but does work for my inputs
+    # and cuts the search space down a chunk).
+
+    # Calculate the max theoretical geode possible at a given state.
+    # If it's lower than the max score seen so far, abort the branch.
+
+    # Keep track of the max resource at each state where state = {time,robots}.
+    # If a branch has the same {time,robots} but has less resources - prune it.
+
+    # Don't build more robo for a certain resource type if the factory will not be
+    # able to consume it in one go.
+
+    for machine in possibleMachines:
+        newBot = copy.deepcopy(bot)
+        newBot = incrementMachine(machine, newBot)
+        newRobots.append(newBot)
+
+    return newRobots
+
+
+def checkIfSeen(robot, checkDuplicates):
+    a = robot["clay"]
+    b = robot["ore"]
+    c = robot["obs"]
+    d = robot["geo"]
+    e = robot["clayBots"]
+    f = robot["oreBots"]
+    g = robot["obsBots"]
+    h = robot["geoBots"]
+    myStrRep = str(a) + " " + str(b) + " " + str(c) + " " + str(d) + \
+        " " + str(e) + " " + str(f) + " " + str(g) + " " + str(h)
+    if myStrRep in checkDuplicates:
+        return True
+    else:
+        checkDuplicates.add(myStrRep)
+        return False
+
+
+def getMaxGeosBFS(robot):
+    checkDuplicates = set()
     q = deque()
     q.append(robot)
+    maxGeo = 0
     for i in range(24):
         newQ = deque()
-        prevMax = currMax
+        # Use a hash set for speed and to make sure states are unique
+        # (not sure if two paths can lead to the same state but my gut feeling is they can)
+
         while (len(q) > 0):
             currBot = q.popleft()
+
             possibleMachines = getPossibleMachinesToIncrement(currBot)
+
             incrementMaterials(currBot)
 
-            currMax = max(currMax, currBot["obs"])
-            currMaxGeo = max(currMaxGeo, currBot["geo"])
+            maxGeo = max(currBot["geo"], maxGeo)
 
-            if (prevMax > currBot["obs"] or prevMaxGeo > currBot["geo"]):
-                continue
-            else:
-                for machine in possibleMachines:
-                    bot = copy.deepcopy(currBot)
-                    newBot = incrementMachine(machine, bot)
-                    newQ.append(newBot)
+            possibleBranches = shouldBuild(currBot, possibleMachines, maxGeo)
 
-        print(str(i) + ":" + str(len(newQ)))
+            for branch in possibleBranches:
+                if (checkIfSeen(branch, checkDuplicates) == False):
+                    newQ.append(branch)
+
+        #print(str(i) + ":" + str(len(newQ)))
         q = copy.deepcopy(newQ)
         # options now exist:
         # build a clay bot?
@@ -124,5 +193,13 @@ def getMaxGeosBFS(robot):
     return getMaxGeoCountFromQueue(q)
 
 
-print(getMaxGeosBFS(robot))
-print("test")
+qualityLevels = 0
+
+counter = 1
+for r in robots:
+    maxGeo = getMaxGeosBFS(r)
+    qualityLevel = counter * maxGeo
+    print(qualityLevel)
+    qualityLevels += qualityLevel
+    counter += 1
+print("answer 1: ", qualityLevels)
