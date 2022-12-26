@@ -164,7 +164,7 @@ def getMaxGeosBFS(robot, blueprint):
     q = deque()
     q.append(robot)
     maxGeo = 0
-    for i in range(24):
+    for i in range(32):
         newQ = deque()
         # Use a hash set for speed and to make sure states are unique
         # (not sure if two paths can lead to the same state but my gut feeling is they can)
@@ -191,14 +191,14 @@ def getMaxGeosBFS(robot, blueprint):
     return getMaxGeoCountFromQueue(q)
 
 
-qualityLevels = 0
+part2Answer = 1
 
 counter = 1
 for r in robots:
-    maxGeo = getMaxGeosBFS(r, counter)
-    qualityLevel = counter * maxGeo
-    print(qualityLevel)
-    qualityLevels += qualityLevel
-    counter += 1
-print("answer 1: ", qualityLevels)
+    if (counter <= 3):
+        maxGeo = getMaxGeosBFS(r, counter)
+        part2Answer *= maxGeo
+        print(maxGeo)
+        counter += 1
+print("answer 2: ", part2Answer)
 # 1335 is the wrong answer -- too low
