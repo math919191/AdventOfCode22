@@ -1,4 +1,5 @@
 from collections import deque
+import copy
 # Blueprint 1:  Each ore robot costs 4 ore. Each clay robot costs 2 ore. Each obsidian robot costs 3 ore and 14 clay. Each geode robot costs 2 ore and 7 obsidian.
 input = open("input.txt", "r")
 robots = []
@@ -53,6 +54,7 @@ def getPossibleMachinesToIncrement(robot):
     if (oreBots > 0):
         combos.append("ore")
 
+    combos.append("none")
     return combos
 
 
@@ -77,24 +79,50 @@ def incrementMachine(machineName, robot):
     return robot
 
 
-def getMaxGeos(robot):
+def getMaxGeoCountFromQueue(q):
+    maxGeo = 0
+    for r in q:
+        maxGeo = max(r["geo"], maxGeo)
+        print(r["geo"])
+    return maxGeo
 
+
+def getMaxGeosBFS(robot):
+    currMax = 0
+    prevMax = 0
+    currMaxGeo = 0
+    prevMaxGeo = 0
+
+    q = deque()
+    q.append(robot)
     for i in range(24):
+        newQ = deque()
+        prevMax = currMax
+        while (len(q) > 0):
+            currBot = q.popleft()
+            possibleMachines = getPossibleMachinesToIncrement(currBot)
+            incrementMaterials(currBot)
 
-        possibleMachines = getPossibleMachinesToIncrement(robot)
+            currMax = max(currMax, currBot["obs"])
+            currMaxGeo = max(currMaxGeo, currBot["geo"])
 
-        incrementMaterials(robot)
+            if (prevMax > currBot["obs"] or prevMaxGeo > currBot["geo"]):
+                continue
+            else:
+                for machine in possibleMachines:
+                    bot = copy.deepcopy(currBot)
+                    newBot = incrementMachine(machine, bot)
+                    newQ.append(newBot)
 
-        if (len(possibleMachines) > 0):
-            robot = incrementMachine(possibleMachines[0], robot)
-
+        print(str(i) + ":" + str(len(newQ)))
+        q = copy.deepcopy(newQ)
         # options now exist:
         # build a clay bot?
         # build a ore bot?
         # build a obs bot?
         # build a geo bot?
-    return robot["geo"]
+    return getMaxGeoCountFromQueue(q)
 
 
-print(getMaxGeos(robot))
+print(getMaxGeosBFS(robot))
 print("test")

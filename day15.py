@@ -35,5 +35,5 @@ for coors in lines:
     if (coors[3] == lineNum):
         beaconsOnLine.add((coors[2], coors[3]))
 
-# 6030937 is too high
+# 6030937 is too high --- don't use the example line number
 print(len(coorOnLine) - len(beaconsOnLine))
