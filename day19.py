@@ -99,7 +99,7 @@ def getMaxesForInput():
     return maxes
 
 
-def shouldBuild(bot, possibleMachines, maxGeo):
+def shouldBuild(bot, possibleMachines, maxGeo, blueprint):
     newRobots = []
     # Always build a geode robot if you can
     if (possibleMachines[0] == "geo"):
@@ -108,13 +108,14 @@ def shouldBuild(bot, possibleMachines, maxGeo):
         return newRobots
 
     # Then always build a obsidian robot if you can
-    if (possibleMachines[0] == "obs"):
-        newBot = incrementMachine("obs", bot)
-        newRobots.append(newBot)
-        return newRobots
+    if (blueprint != 21):
+        if (possibleMachines[0] == "obs"):
+            newBot = incrementMachine("obs", bot)
+            newRobots.append(newBot)
+            return newRobots
 
     # Ignore any state lagging behind the best geode bot count by 2 or more
-    if (bot["geo"]+2 < maxGeo):
+    if (bot["geo"]+1 < maxGeo):
         return []
 
     # If you skipped building a robot on the turn before, don't just build it here for kicks
@@ -158,7 +159,7 @@ def checkIfSeen(robot, checkDuplicates):
         return False
 
 
-def getMaxGeosBFS(robot):
+def getMaxGeosBFS(robot, blueprint):
     checkDuplicates = set()
     q = deque()
     q.append(robot)
@@ -177,7 +178,8 @@ def getMaxGeosBFS(robot):
 
             maxGeo = max(currBot["geo"], maxGeo)
 
-            possibleBranches = shouldBuild(currBot, possibleMachines, maxGeo)
+            possibleBranches = shouldBuild(
+                currBot, possibleMachines, maxGeo, blueprint)
 
             for branch in possibleBranches:
                 if (checkIfSeen(branch, checkDuplicates) == False):
@@ -185,11 +187,7 @@ def getMaxGeosBFS(robot):
 
         #print(str(i) + ":" + str(len(newQ)))
         q = copy.deepcopy(newQ)
-        # options now exist:
-        # build a clay bot?
-        # build a ore bot?
-        # build a obs bot?
-        # build a geo bot?
+
     return getMaxGeoCountFromQueue(q)
 
 
@@ -197,9 +195,10 @@ qualityLevels = 0
 
 counter = 1
 for r in robots:
-    maxGeo = getMaxGeosBFS(r)
+    maxGeo = getMaxGeosBFS(r, counter)
     qualityLevel = counter * maxGeo
     print(qualityLevel)
     qualityLevels += qualityLevel
     counter += 1
 print("answer 1: ", qualityLevels)
+# 1335 is the wrong answer -- too low
