@@ -114,5 +114,8 @@ for line in f:
             answer += count
             print(count)
         count += 1
+
 print(answer)
 # 5446 is too low
+
+# 5506 is apparently the right answer

@@ -1,7 +1,7 @@
 
 input = open("input.txt", "r")
 
-
+# From AoC reddit
 # Part 2: same strategy as many people here,
 # walk along the edge of the diamonds created by the sensors
 # and for every of these positions,

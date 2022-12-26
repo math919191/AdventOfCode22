@@ -1665,6 +1665,3 @@ TRUE: ran out of left!
 TRUE: 10 5
 TRUE: ran out of left!
 FALSE: out of range right!
-150 : FALSE: out of items on the right
-FALSE: out of range right!
-TRUE: ran out of left!
