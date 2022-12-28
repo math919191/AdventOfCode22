@@ -1,4 +1,7 @@
 
+import copy
+
+
 def readInput():
     input = open("input.txt", "r")
     lines = []
@@ -40,7 +43,9 @@ def checkIfHitsRightWall(rockCoor, rockNum):
     return False
 
 
-def checkIfHitsLeftRock(rockCoor, rockNum, chamber):
+def checkIfHitsLeftRock(rockCoor, rockNum, chamber1):
+    chamber = copy.deepcopy(chamber1)
+    chamber = [x - 1 for x in chamber]
     if rockNum == 0:
         leftEdge = rockCoor[0]
         if chamber[leftEdge - 1] == rockCoor[1]:
@@ -79,7 +84,9 @@ def checkIfHitsLeftRock(rockCoor, rockNum, chamber):
     return False
 
 
-def checkIfHitsRightRock(rockCoor, rockNum, chamber):
+def checkIfHitsRightRock(rockCoor, rockNum, chamber1):
+    chamber = copy.deepcopy(chamber1)
+    chamber = [x - 1 for x in chamber]
     if rockNum == 0:
         rightEdge = rockCoor[0] + 3
         if chamber[rightEdge + 1] == rockCoor[1]:
@@ -108,7 +115,7 @@ def checkIfHitsRightRock(rockCoor, rockNum, chamber):
     elif rockNum == 4:
         for i in range(2):
             rightEdge = rockCoor[0] + 1
-            if chamber[rightEdge + 1] == rockCoor[1] + i:
+            if chamber[rightEdge + 1] >= rockCoor[1] + i:
                 return True
 
     return False
@@ -155,6 +162,10 @@ def checkIfHitBottom(chamber, rockCoor, rockNum):
     elif rockNum == 1:
         if chamber[x+1] == y - 1 - 1:
             return True
+        if chamber[x] == y - 1:
+            return True
+        if chamber[x+2] == y - 1:
+            return True
     elif rockNum == 2:
         for i in range(3):
             if chamber[x + i] == y - 1:
@@ -172,7 +183,7 @@ def checkIfHitBottom(chamber, rockCoor, rockNum):
 
 def updateChamber(rockNum, chamber, rockCoor):
     x = rockCoor[0]
-    y = rockCoor[1] - 1
+    y = rockCoor[1] + 1
     if rockNum == 0:
         for i in range(4):
             chamber[x + i] = y
@@ -199,24 +210,26 @@ chamber = [0 for x in range(7)]
 
 moveCounter = 0
 for rockNum in range(2022):
+    if (rockNum == 23):
+        print("stop! Wait a minute")
     currRockNum = rockNum % 5
 
-    rockCoor = findBottomLeftStartingCoor(chamber, rockNum)
+    rockCoor = findBottomLeftStartingCoor(chamber, currRockNum)
 
     hitRock = False
 
     while (hitRock == False):
-        rockCoor = moveRock(moveCounter, rockNum, movements, rockCoor)
+        rockCoor = moveRock(moveCounter, currRockNum, movements, rockCoor)
 
         moveCounter += 1
 
-        hitRock = checkIfHitBottom(chamber, rockCoor, rockNum)
+        hitRock = checkIfHitBottom(chamber, rockCoor, currRockNum)
 
         if (hitRock == False):
             rockCoor = fall(rockCoor)
 
-    chamber = updateChamber(rockNum, chamber, rockCoor)
-    print(chamber)
+    chamber = updateChamber(currRockNum, chamber, rockCoor)
+    print(rockNum, chamber)
 
 print("part 1", max(chamber))
 # The tall, vertical chamber is exactly seven units wide.
