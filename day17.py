@@ -209,7 +209,7 @@ movements = readInput()
 chamber = [0 for x in range(7)]
 
 moveCounter = 0
-for rockNum in range(2022):
+for rockNum in range(2023):
     if (rockNum == 23):
         print("stop! Wait a minute")
     currRockNum = rockNum % 5
